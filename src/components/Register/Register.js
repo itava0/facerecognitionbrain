@@ -22,8 +22,26 @@ class Register extends Component {
 		this.setState({password: event.target.value})
 	}
 
+	onSubmitSignin = () => {
+    fetch("http://localhost:8000/register", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+				name: this.state.name
+      }),
+    })
+      .then((res) => res.json())
+      .then((user) => {
+        if (user) {
+					this.props.loadUser(user)
+          this.props.onRouteChange("home");
+        }
+      });
+  };
+
 	render() {
-    const { onRouteChange } = this.props;
 	return (
 		<article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
 		<main className="pa4 black-80">
@@ -63,7 +81,7 @@ class Register extends Component {
 		    </fieldset>
 		    <div className="">
 		      <input 
-          onClick={() => onRouteChange('home')}
+          onClick={this.onSubmitSignin}
 			      className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
 			      type="submit" 
 			      value="Register" 
